@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head profile="http://www.w3.org/2005/10/profile">
+	<title>Biblio</title>
+	<link rel="icon" type="image/png" href="/favicon.ico">
+	<meta name="author" content="butfly,कलविङ्क" />
+	<meta name="keywords" content="book,reader,viewer,markdown,github api,shelf" />
+	<meta name="description" content="Biblio: site from github repository" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- public css -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="/assets/css/loading.css">
+	<!-- public js -->
+	<!-- assets/js/jquery-3.3.1.min.js -->
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<!-- assets/js/bootstrap-treeview.min.js -->
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/jonmiles/bootstrap-treeview@1.2.0/dist/bootstrap-treeview.min.js"></script>
+	<!--assets/js/base64.min.js -->
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/dankogai/js-base64/base64.min.js"></script>
+	<!-- assets/js/showdown-min.js -->
+	<script type="text/javascript" src="https://cdn.rawgit.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"></script>
+
+	<!-- private js/css -->
+	<link rel="stylesheet" type="text/css" href="/assets/css/unbootstrape.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/fonts.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/view.css">
+	<script type="text/javascript" src="/assets/js/gapi.js"></script>
+	<script type="text/javascript" src="/assets/js/view.js"></script>
+
+	<style type="text/css">
+		#tree,#tree .badge {font-size:small;}
+		#tree {padding:1em;float:left;display:inline-flex;max-width:40em;}
+	</style>
+</head>
+
+<body onload="treeview('#tree', '#md-viewer');">
+	<div class="md-container2">
+		<div id="tree"></div>
+		<article id="md-viewer" class="md-container"></article>
+		<div style="width:100px;margin:1em;float:right;">
+			<script type="text/javascript" id="clstr_globe" target="_blank" src="//cdn.clustrmaps.com/globe.js?d=Zw3OGg6lk1N9rlaASFhebTmhD8l411MAcNkQUNrNaLA"></script>
+		</div>
+	</div>
+</body>
+
+</html>

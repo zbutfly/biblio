@@ -1,0 +1,40 @@
+article {
+	line-height: initial;
+	box-sizing: initial;
+}
+
+article blockquote {
+	font-size: initial;
+	margin: initial;
+	border-left: 5px solid burlywood;
+	padding: initial;
+}
+
+article p {
+	font-size: initial;
+	margin: initial;
+}
+
+article code {
+	padding: initial;
+	font-size: initial;
+	background-color:  initial;
+	border-radius: initial;
+	font-family: initial;
+}
+
+article pre {
+	display: initial;
+	padding: initial;
+	margin: initial;
+	font-size: initial;
+	line-height: initial;
+	color: initial;
+	word-break: initial;
+	word-wrap: initial;
+	background-color: initial;
+	border: initial;
+	border-radius: initial;
+	font-family: initial;
+	overflow: auto;
+}

@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css?family=Aref+Ruqaa');
+@import url('https://fonts.googleapis.com/css?family=Merriweather');
+
+html {font-family:Merriweather;width:100%;}
+.md-container2 {max-width:60em;border:4px double burlywood;background-color:linen;padding:0.5em;margin:0.5em auto;}
+.md-container {padding:0.5em 1em;border:1px solid burlywood;padding:1em;page-break-inside:auto;font-family:Merriweather;}
+header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-size:small;text-align:right;margin-right:1em;}
+a {color:peru;text-decoration:none;}
+table, th, td {border:1px solid burlywood;border-collapse:collapse;padding:0.2em 1em;font-size:small;}
+th {text-align:center;}
+td {text-align:left;}
+hr {border:1px solid burlywood;}
+
+h1 {margin-bottom: 0;}
+h2 {width:65%;margin:0 0 1.2em 0;padding:1em 0 0.5em 1em;border-bottom:2px solid gray;}
+h2#personal-information {width:55%;margin-left:120px;}
+img.co-logo {height:17px;margin-bottom:-3px;margin-left:1em;}
+
+.additional {width:25%;float:right;font-size:small;margin:1em;padding:0.5em 1em;background-color:lemonchiffon;border:1px dotted gray;}
+.additional dd {font-style:italic;}
+ul.toc-list, ul.toc-list ul {padding-left:1.5em;}
+ul.toc-list a {color:darkslategrey;}
+div.paragraph {page-break-inside:avoid;}
+
+div.expr-block {border:1px solid burlywood;margin-top:0.5em;margin-bottom:0.5em;padding:0.5em;page-break-inside:avoid;}
+div.expr-block h3 a {color:inherit;}
+div.expr-block h4 {margin-top:0.6em;}
+div.expr-block p {padding-left:1em;margin-bottom:0.3em;}
+div.expr-block .exp-inst {border-left:1em solid burlywood;border-bottom:1px solid burlywood;padding:0.1em 1em 1em;margin:2em 1em 1em 1em;page-break-inside:avoid;}
+/*h4 {text-decoration-line:underline;text-decoration-style:wavy;}*/
+
+.switcher-c {margin:0 0.5em;}
+.switcher-c td {padding:0.5em;width:25em;color:peru;}
+.switcher-c .switcher-span {cursor:pointer;margin-left:0.3em;}
+
+article.md-container {
+	margin: 0 auto;
+	white-space: pre-wrap;       /* Since CSS 2.1 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	font-family: Merriweather,STXinwei,STLiti,STKaiti,"楷体",FangSong,PMingLiU;
+	font-size: larger;
+}
+/* track */
+.clustrmaps-map-control {float:left;margin-top:0.5em!important;}/*width:100px!important;height:49px!important;*/
+
+/* scrool bar */
+::-webkit-scrollbar {width: 25px;border: 1px solid linen;}
+::-webkit-scrollbar-track {background-color: linen;box-shadow: inset 0 0 5px grey;border-radius: 10px;}
+::-webkit-scrollbar-thumb {background: burlywood;border-radius: 10px;}
