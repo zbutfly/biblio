@@ -1,3 +1,4 @@
+var LOADING = '<div id="lds-div" class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
 var context = {};
 
 function parseContext(treeid, viewid) {
@@ -18,7 +19,7 @@ function parseContext(treeid, viewid) {
 		var segs = match[1].split('/');
 		if (segs.length > 1) { // contain repos and folder
 			args.repos = segs[0];
-			args.folder = segs[1];
+			args.folders = [segs[1]];
 		}
 	}
 
@@ -32,7 +33,7 @@ function parseContext(treeid, viewid) {
 				args.repos = a[1];
 				break;
 			case 'd':
-				args.folder = a[1];
+				args.folders = a[1].split('|');
 				break;
 			case 'x':
 				args.exts = a[1].split(',');
@@ -40,12 +41,6 @@ function parseContext(treeid, viewid) {
 		}
 	}
 	return args;
-}
-
-
-
-function skey() {
-	return context.owner + '/' + context.repos + '/' + context.folder;
 }
 
 function ignorePath(path) {
@@ -126,36 +121,6 @@ function render(data, txt) {
 	}
 }
 
-function treefill(data) {
-	context.tree.treeview({
-		levels: 1,
-		// enableLinks: true,
-		showTags: true,
-		backColor: 'linen',
-		borderColor: 'burlywood',
-		data: data,
-		onNodeSelected: (event, data) => {
-			if (data.href) {
-				context.view.html(LOADING);
-				var c = sessionStorage.getItem(data.href);
-				if (null === c) {
-					api(data.href, resp => {
-						sessionStorage.setItem(data.href, resp.content);
-						render(data, Base64.decode(resp.content));
-					}, data.size);
-				} else render(data, Base64.decode(c));
-				context.tree.treeview('collapseAll', {
-					silent: false
-				});
-			} else
-				context.tree.treeview('toggleNodeExpanded', [data.nodeId, {
-					silent: false
-				}]);
-		}
-	});
-	console.debug('treeview', 'rendering finished.');
-}
-
 function process1(item, root) {
 	var names = item.path.split('/'),
 		filename = names.pop(),
@@ -188,44 +153,40 @@ function process1(item, root) {
 	return true;
 }
 
-function process(resptree, vid) {
-	var root = {
-		tags: [0],
-		nodes: []
-	};
-	resptree.every((item, index) => process1(item, root));
-	treefill(root.nodes, vid);
-}
-
 function readme() {
 	context.view.html(LOADING);
-	api('https://api.github.com/repos/' + context.owner + '/' + context.repos + '/readme/', resp => render({
+	api_content('https://api.github.com/repos/' + context.owner + '/' + context.repos + '/readme/', content => render({
 		ext: 'md'
-	}, Base64.decode(resp.content)));
+	}, content));
 }
-
-var LOADING = '<div id="lds-div" class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
 
 function treeview(treeid, vid) {
 	context = parseContext(treeid, vid);
 	console.debug('context', context);
 	readme();
 	context.tree.html(LOADING);
-	var cache = sessionStorage.getItem(skey());
-	if (cache !== null) {
-		console.debug('cache', 'found and rendering...');
-		process(JSON.parse(cache).tree);
-	} else api('https://api.github.com/repos/' + context.owner + '/' + context.repos + '/contents/', resp => {
-		resp.every((rootdir, index) => {
-			// filter and ignore prefix for internal items.
-			if (ignorePath(rootdir.name) || rootdir.type !== 'dir' || context.folder !== rootdir.name) return true;
-			api(rootdir.git_url + '?recursive=1', resp => {
-				sessionStorage.setItem(skey(), JSON.stringify(resp));
-				console.debug('api', resp.tree.length + ' items loaded in ' + resp.url + '.');
-				if (resp.truncated) alert('truncated for folder is too large, please switch to GIT SITE or GIT RAW mode.');
-				process(resp.tree);
-			});
-			return false;
-		})
+	api_root(context.owner, context.repos, context.folders, (dir, tree) => {
+		var root = treeNodeDir(dir);
+		tree.every((item, index) => process1(item, root));
+		context.tree.treeview({
+			levels: 1,
+			// enableLinks: true,
+			showTags: true,
+			backColor: 'linen',
+			borderColor: 'burlywood',
+			data: [root],
+			onNodeSelected: (event, data) => {
+				if (data.href) {
+					context.view.html(LOADING);
+					api_content(data.href, content => render(data, content));
+					context.tree.treeview('collapseAll', {
+						silent: false
+					});
+				} else context.tree.treeview('toggleNodeExpanded', [data.nodeId, {
+					silent: false
+				}]);
+			}
+		});
+		console.debug('treeview', 'rendering finished.');
 	});
 }

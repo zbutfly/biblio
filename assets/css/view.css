@@ -6,7 +6,7 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 
 #biblio-outer {max-width:60em;border:4px double burlywood;background-color:linen;padding:0.5em;margin:0.5em auto;}
 #biblio-outer a {color:peru;text-decoration:none;}
-#biblio-inner {padding:0.5em 1em;border:1px solid burlywood;padding:1em;page-break-inside:auto;font-family:Merriweather,STXinwei,STLiti,STKaiti,"楷体",FangSong,PMingLiU;font-size:larger;}
+#biblio-inner {padding:3em 1em 1em;border:1px solid burlywood;page-break-inside:auto;font-family:Merriweather,STXinwei,STLiti,STKaiti,"楷体",FangSong,PMingLiU;font-size:larger;}
 #biblio-inner table,
 #biblio-inner th,
 #biblio-inner td {border:1px solid burlywood;border-collapse:collapse;padding:0.2em 1em;font-size:small;}
@@ -52,3 +52,12 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 /* track */
 .clustrmaps-map-control {float:left;margin-top:0.5em!important;}/*width:100px!important;height:49px!important;*/
 
+.biblio-menu {
+	width: 90%;
+	margin: 2em 0.5em;
+	position: fixed;
+	_position: absolute;
+	top: 0;
+	_top: "expression(eval(document.documentElement.scrollTop))";
+	z-index: 10;
+}

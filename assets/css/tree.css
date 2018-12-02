@@ -2,6 +2,13 @@
 	max-width: 40em;
 }
 
+.treeview .list-group {
+
+    padding-left: 0;
+    margin: 0 auto 0.5em;
+
+}
+
 .treeview .list-group-item {
 	cursor: pointer;
 	margin-bottom: -1px;
@@ -11,12 +18,12 @@
 	margin-bottom: -1px;
 }
 
-.list-group-item>.badge {
+.treeview .list-group-item>.badge {
 	float: right;
 	margin-left: 0.5em;
 }
 
-.badge {
+.treeview .badge {
 	display: inline-block;
 	min-width: 10px;
 	padding: 3px 7px;
