@@ -1,40 +1,59 @@
+/* override bootstrap */
+body {
+	font-size: initial;
+}
+
 article {
 	line-height: initial;
 	box-sizing: initial;
 }
 
 article blockquote {
-	font-size: initial;
-	margin: initial;
-	border-left: 5px solid burlywood;
-	padding: initial;
+	font-size: inherit;
+	margin: inherit;
+	border-left: initial;
+	padding: inherit;
 }
 
 article p {
-	font-size: initial;
-	margin: initial;
+	font-size: inherit;
+	margin: inherit;
 }
 
 article code {
-	padding: initial;
-	font-size: initial;
-	background-color:  initial;
-	border-radius: initial;
-	font-family: initial;
+	padding: inherit;
+	font-size: inherit;
+	background-color: inherit;
+	border-radius: inherit;
+	font-family: inherit;
 }
 
 article pre {
-	display: initial;
-	padding: initial;
-	margin: initial;
-	font-size: initial;
-	line-height: initial;
-	color: initial;
-	word-break: initial;
-	word-wrap: initial;
-	background-color: initial;
-	border: initial;
-	border-radius: initial;
-	font-family: initial;
+	display: inherit;
+	padding: inherit;
+	margin: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	color: inherit;
+	word-break: inherit;
+	word-wrap: inherit;
+	background-color: inherit;
+	border: inherit;
+	border-radius: inherit;
+	font-family: inherit;
 	overflow: auto;
 }
+
+article#biblio-container blockquote {color:DarkKhaki;line-height:initial;border:none;font-size:unset;}
+article#biblio-container pre {margin-left:1em;max-width:40em;border:none;}
+article#biblio-container pre,
+article#biblio-container code {font-family:unset;color:DarkSlateBlue;white-space:pre-line;background-color:unset;}
+article#biblio-container pre sub,
+article#biblio-container pre sup,
+article#biblio-container sub,
+article#biblio-container sup {font-weight:normal;color:DarkKhaki;}
+/*
+* {-webkit-box-sizing:unset;-moz-box-sizing:unset;box-sizing:unset;}
+#biblio-html {font-family:Merriweather;width:unset;font-size:unset;-moz-box-sizing:unset;box-sizing:unset;}
+#biblio-body {font-family:unset;font-size:unset;line-height:unset;color:unset;background-color:unset;margin:unset;box-sizing:unset;}
+ */

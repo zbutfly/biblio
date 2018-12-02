@@ -8,7 +8,7 @@ I write it for myself. I'm not familar for page design so the only designing is 
 
 Anything is fetch from github repository (or github pages) by javascript, through `github api v3`.
 
-The repository contain an small sample `shelf` as default for developing and testing. And my personal shelf is: [Glazy Maze](http://bb.butfly.net/?o=zbutfly&r=shelf&d=shelf), which contain some Chinese and Worldwide Classical Literature.
+The repository contain an small [sample `shelf`](https://bb.butfly.net/?o=zbutfly&r=biblio&d=sample) as default for developing and testing. And my personal shelf is: [Glazy Maze](http://bb.butfly.net/?o=zbutfly&r=shelf&d=shelf), which contain some Chinese and Worldwide Classical Literature.
 
 ## Techical
 

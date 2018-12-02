@@ -98,17 +98,14 @@ function treeNodeFile(filename, item, names) {
 function parseTitle() {
 	for (var i = 1; i < 7; i++) {
 		var hs = context.view[0].getElementsByTagName('h' + i);
-		if (hs.length > 0) {
-			document.title = '《' + hs[0].innerText + '》 - Biblio';
-			return;
-		}
+		if (hs.length > 0) return hs[0].innerText;
 	}
 }
 
-function render(ext, txt) {
-	switch (ext) {
+function render(data, txt) {
+	switch (data.ext) {
 		case 'txt':
-			context.view.text(txt);
+			context.view.html('<pre style="color:unset;">' + txt + '</pre>');
 			document.title = '《' + data.text + '》 - Biblio';
 			return;
 		case 'md':
@@ -117,14 +114,14 @@ function render(ext, txt) {
 				strikethrough: true
 			}).makeHtml(txt);
 			context.view.html(html);
-			document.title = '《' + parseTitle() + '》 - Biblio';
+			document.title = '《' + (parseTitle() || data.text) + '》 - Biblio';
 			return;
 		case 'html':
 		case 'htm':
 			context.view.html(html);
 			return;
 		default:
-			context.view.text(ext + ' is not supportted');
+			context.view.text(data.ext + ' is not supportted');
 			return;
 	}
 }
@@ -139,13 +136,14 @@ function treefill(data) {
 		data: data,
 		onNodeSelected: (event, data) => {
 			if (data.href) {
+				context.view.html(LOADING);
 				var c = sessionStorage.getItem(data.href);
 				if (null === c) {
 					api(data.href, resp => {
 						sessionStorage.setItem(data.href, resp.content);
-						render(data.ext, Base64.decode(resp.content));
+						render(data, Base64.decode(resp.content));
 					}, data.size);
-				} else render(data.ext, Base64.decode(c));
+				} else render(data, Base64.decode(c));
 				context.tree.treeview('collapseAll', {
 					silent: false
 				});
@@ -200,7 +198,10 @@ function process(resptree, vid) {
 }
 
 function readme() {
-	api('https://api.github.com/repos/' + context.owner + '/' + context.repos + '/readme/', resp => render('md', Base64.decode(resp.content)));
+	context.view.html(LOADING);
+	api('https://api.github.com/repos/' + context.owner + '/' + context.repos + '/readme/', resp => render({
+		ext: 'md'
+	}, Base64.decode(resp.content)));
 }
 
 var LOADING = '<div id="lds-div" class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
@@ -208,8 +209,8 @@ var LOADING = '<div id="lds-div" class="lds-roller"><div></div><div></div><div><
 function treeview(treeid, vid) {
 	context = parseContext(treeid, vid);
 	console.debug('context', context);
-	context.tree.html(LOADING);
 	readme();
+	context.tree.html(LOADING);
 	var cache = sessionStorage.getItem(skey());
 	if (cache !== null) {
 		console.debug('cache', 'found and rendering...');
