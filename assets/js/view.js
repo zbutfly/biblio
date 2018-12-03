@@ -1,10 +1,16 @@
 var LOADING = '<div id="lds-div" class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
 
 function parseShelfContext(context, cb) {
-	var shelfconf = /^\w+\.github.io$/.test(context.repos) ? 'https://' + context.owner + '.github.io/_biblio/shelf.json' : 'https://' + context.owner + '.github.io/' + context.repos + '/_biblio/shelf.json';
+	var shelfconf;
+	if (/^\w+\.github.io$/.test(context.repos))
+		shelfconf = 'https://' + context.owner + '.github.io/_biblio/shelf.json';
+	else if (context.base)
+		shelfconf = context.base + '/_biblio/shelf.json';
+	else shelfconf = 'https://' + context.owner + '.github.io/' + context.repos + '/_biblio/shelf.json';
+
 	$.get(shelfconf, shelf_ctx => {
-		if (shelf_ctx.dirs) context.dirs = shelf_ctx;
-		if (shelf_ctx.exts) context.exts = shelf_exts;
+		if (shelf_ctx.dirs) context.dirs = shelf_ctx.dirs;
+		if (shelf_ctx.exts) context.exts = shelf_ctx.exts;
 		console.debug('context', context);
 		cb(context);
 	}).fail(() => cb(context));
@@ -48,6 +54,9 @@ function parseContext(treeid, viewid, cb) {
 				break;
 			case 'x':
 				qs_ctx.exts = a[1].split(',');
+				break;
+			case 's':
+				qs_ctx.base = a[1];
 				break;
 		}
 	}
@@ -142,7 +151,7 @@ function process1(context, item, root) {
 		if (ignorePath(path)) return false;
 		var pp = null;
 		p.nodes.every((n, index) => {
-			if (n.text !== path)
+			if (n.nodes === undefined || n.text !== path)
 				return true;
 			p = n;
 			return false;
@@ -167,6 +176,7 @@ function process1(context, item, root) {
 }
 
 var SITE_CONTEXT;
+
 function readme(context) {
 	context = context || SITE_CONTEXT;
 	context.view.html(LOADING);

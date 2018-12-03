@@ -1,12 +1,10 @@
-#biblio-dir {
-	max-width: 40em;
-}
-
 .treeview .list-group {
-
-    padding-left: 0;
-    margin: 0 auto 0.5em;
-
+	padding: 1px 0;
+	margin: 0;
+	float: left;
+	max-width: 40em;
+	max-height: 40em;
+	overflow: auto;
 }
 
 .treeview .list-group-item {
