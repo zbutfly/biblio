@@ -40,10 +40,10 @@
 	</style>
 </head>
 
-<body id="biblio-body" onload="treeview('#biblio-dir', '#biblio-inner');">
+<body id="biblio-body" onload="init('#biblio-dir', '#biblio-inner');">
 	<div id="biblio-outer">
 		<div class="biblio-menu">
-			<a style="margin:1em;float:right;font-size:small;cursor:pointer;" onclick="readme();">Back to Home</a>
+			<a style="margin:1em;float:right;font-size:small;cursor:pointer;" onclick="sessionStorage.clear();readme();">Restart</a>
 			<div id="biblio-dir"></div>
 		</div>
 		<article id="biblio-inner"></article>

@@ -38,7 +38,7 @@ function api_content(href, cb) {
 function api_root(owner, repos, dirs, cb) {
 	for (var i = 0; i < dirs.length; i++) {
 		var dir = dirs[i];
-		var cache_key = owner + '/' + repos + '/' + dir;
+		var cache_key = 'github-api:' + owner + '/' + repos + '/' + dir;
 		var cache = sessionStorage.getItem(cache_key);
 		if (cache !== null) {
 			console.debug('gapi', 'Tree cache found.');

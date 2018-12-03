@@ -4,31 +4,31 @@
 
 `Biblio` is full static site which can convert your repository on github into an online book shelf and reader.
 
-I write it for myself. I'm not familar for page design so the only designing is providing of `_header.seg.html`, `_banner.seg.html` and `_footer.seg.html`.
+I writed it for myself. I'm not familiar with page designing so the page customization will be provided only by `_header.seg.html`, `_banner.seg.html` and `_footer.seg.html`.
 
-Anything is fetch from github repository (or github pages) by javascript, through `github api v3`.
+Anything is fetched from github repository (or github pages) by javascript, through the great restful `github api v3`.
 
-The repository contain an small [sample `shelf`](https://bb.butfly.net/?o=zbutfly&r=biblio&d=sample) as default for developing and testing. And my personal shelf is: [Glazy Maze](http://bb.butfly.net/?o=zbutfly&r=shelf&d=shelf), which contain some Chinese and Worldwide Classical Literature.
+The site contain an small [sample `shelf`](https://bb.butfly.net/?o=zbutfly&r=biblio&d=sample) as default book shelf for testing. And my personal shelf is: [Glazy Maze](http://bb.butfly.net/?o=zbutfly&r=shelf&d=shelf), which contains some Chinese and Worldwide Classical Literature.
 
 ## Techical
 
-### Configuration
-
 The site is writen by pure `html5`/`css3`/`javascript`.
+
+### Configuration
 
 The site is based on two repositories: `host` and `shelf`.
 
-So Configuration is splitted into two. Configuration file should be placed under the `/_biblio` folder. If the `shelf` configuration is not found, some configuration item will be same as the `host` (which means you host your `shelf` in same site of `host`).
+So Configuration is splitted into two. Configuration file should be placed under the `/_biblio` folder of repositories. If the `shelf` configuration is not found, some configuration item will be same as the `host` (which means you host your `shelf` in the same site of `host`).
 
-`Host` configuration can also be overrided by url parameters (query string), so that you can directly access your `shelf` repository by by site url with just customized query string (refer to the `security` section for tracking).
+Configurations can also be overrided by url parameters (query string), so that you can directly access your `shelf` repository by this site url with just customizing query string (refer to the `security` section for tracking).
 
 The starter page of `biblio` site will be the README of your `shelf` repository.
 
 ### Shelf
 
-#### Supportted file type
+#### File types
 
-File type is determinated by the filename, as the last extension name:
+File type is determinated by the filename, as the last extension name. Now supported file types (including planning) are:
 
 - plain text: .txt, files should have a UTF-8 encoding and UNIX(LF) line breaking.
 - markdown: .md
@@ -66,7 +66,7 @@ Folder with name starting as **'~'** or **'_'** will be ignore as internal folde
 
 ### Cache
 
-Since the accessing of github api will forbiden on frequent read, I use `sessionStorage` of browser for cache of responses from api. You can clean them to refresh site.
+Since the accessing of github api will be forbidden on frequent reading, I use `sessionStorage` of browser as cache of responses from api. You can clean them to refresh the site.
 
 ### Auth
 
@@ -82,7 +82,10 @@ I put a source tracking support by https://clustrmaps.com in code of the only ht
 
 Tested browser include (All on latest version):
 
-- Desktop: Firefox (recommended, I don't like Chrome), Chrome and Edge.
+- Desktop: 
+	- Firefox (recommended and fully tested, I don't like Chrome)
+	- Chrome
+	- Edge
 - Mobile:
 	- Android: Firefox, Chrome
 	- iOS: Safari, Firefox
@@ -91,7 +94,7 @@ The site is friendly on phone/tablet layout.
 
 ### Dependencies
 
-Thanks for development of the projects
+Thanks for development of the projects helping me:
 
 - [base64.js](https://github.com/dankogai/js-base64)
 - [Bootstrap Tree View](https://github.com/jonmiles/bootstrap-treeview/)
