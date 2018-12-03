@@ -8,7 +8,7 @@ I writed it for myself. I'm not familiar with page designing so the page customi
 
 Anything is fetched from github repository (or github pages) by javascript, through the great restful `github api v3`.
 
-The site contain an small [sample `shelf`](https://bb.butfly.net/?o=zbutfly&r=biblio&d=sample) as default book shelf for testing. And my personal shelf is: [Glazy Maze](http://bb.butfly.net/?o=zbutfly&r=shelf&d=shelf), which contains some Chinese and Worldwide Classical Literature.
+The site contain an small [sample `shelf`](https://biblio.butfly.net/?o=zbutfly&r=biblio&d=sample) as default book shelf for testing. And my personal shelf is: [可醉楼藏书 Inebriatable Libliotheca](http://biblio.butfly.net/?o=zbutfly&r=shelf&d=shelf), which contains some Chinese and Worldwide Classical Literature.
 
 ## Techical
 

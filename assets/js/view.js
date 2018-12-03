@@ -79,7 +79,7 @@ var UNITS = ['B', 'K', 'M', 'G'];
 
 function treeNodeFile(context, filename, item, names) {
 	var title = filename.substr(0, filename.lastIndexOf('.'));
-	var ext = filename.substr(filename.lastIndexOf('.') + 1);
+	var ext = filename.substr(filename.lastIndexOf('.') + 1).toLowerCase();
 	if (context.exts.indexOf(ext) < 0) return null;
 	var size = item.size,
 		u = 0;
@@ -177,7 +177,7 @@ function readme(context) {
 }
 
 function init(treeid, vid) {
-	$('.biblio-menu').width($(vid).width() * 0.92);
+	$('.biblio-menu').width($(vid).width());
 	parseContext(treeid, vid, context => {
 		SITE_CONTEXT = readme(context);
 		context.tree.html(LOADING);
