@@ -44,6 +44,8 @@
 	<div id="biblio-outer">
 		<div class="biblio-menu">
 			<a style="margin:1em;float:right;font-size:small;cursor:pointer;" onclick="sessionStorage.clear();readme();" title="Clear the cache and back to homepage.">Restart</a>
+			<input type="search" id="biblio-dir-search" value="" placeholder="Search..." oninput="search($('#biblio-dir-search').val());">
+			<span id="biblio-dir-search-c" class="badge">0</span>
 			<div id="biblio-dir"></div>
 		</div>
 		<article id="biblio-inner"></article>

@@ -186,11 +186,16 @@ function readme(context) {
 	return context;
 }
 
+var camping = false;
+
 function init(treeid, vid) {
+	$('#biblio-dir-search').val('');
 	$('.biblio-menu').width($(vid).width());
 	parseContext(treeid, vid, context => {
 		SITE_CONTEXT = readme(context);
 		context.tree.html(LOADING);
+		document.getElementById('biblio-dir-search').addEventListener('compositionstart', () => camping = true);
+		document.getElementById('biblio-dir-search').addEventListener('compositionend', () => camping = false);
 		api_root(context.owner, context.repos, context.dirs, (dir, tree) => {
 			var root = treeNodeDir(dir);
 			tree.every((item, index) => process1(context, item, root));
@@ -211,10 +216,34 @@ function init(treeid, vid) {
 					} else context.tree.treeview('toggleNodeExpanded', [data.nodeId, {
 						silent: false
 					}]);
+				},
+				onSearchComplete: (event, results) => {
+					var rs = Object.keys(results).length;
+					$('#biblio-dir-search-c').text(rs);
+					if (rs > 0) $('.node-biblio-dir[data-nodeid="' + results[0].nodeId + '"]')[0].scrollIntoView()
 				}
 			});
 			$(vid).css('padding-top', $('.biblio-menu').height());
 			console.debug('treeview', 'rendering finished.');
 		});
 	});
+}
+
+function search(s) {
+	if (camping) return;
+	s = (s || '').trim();
+	if (s === '') {
+		SITE_CONTEXT.tree.treeview('clearSearch');
+		$('#biblio-dir-search-c').text(0);
+		SITE_CONTEXT.tree.treeview('collapseAll', {
+			silent: false
+		});
+	} else {
+		console.debug('Search', s);
+		SITE_CONTEXT.tree.treeview('search', [s, {
+			ignoreCase: true, // case insensitive
+			exactMatch: false, // like or equals
+			revealResults: true, // reveal matching nodes
+		}]);
+	}
 }
