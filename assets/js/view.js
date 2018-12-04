@@ -1,5 +1,3 @@
-var LOADING = '<div id="lds-div" class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
-
 function parseLiblio(context, cb) {
 	var shelfconf;
 	if (context.base)
@@ -96,7 +94,6 @@ function treeNodeFile(context, filename, item, names) {
 		size /= 1000;
 		u++;
 	}
-	//item.size.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 	return {
 		text: title,
 		tags: [ /*names.join('/'), */ size.toFixed() + ' ' + UNITS[u], ext],
@@ -175,38 +172,35 @@ function process1(context, item, root) {
 	return true;
 }
 
-var SITE_CONTEXT;
+var SITE_CONTEXT, camping = false;
 
-function readme(context) {
-	context = context || SITE_CONTEXT;
-	context.view.html(LOADING);
-	api_content('https://api.github.com/repos/' + context.owner + '/' + context.repos + '/readme/', content => render(context, {
-		ext: 'md'
-	}, content));
-	return context;
+function readme() {
+	api_readme(SITE_CONTEXT, content => {
+		render(SITE_CONTEXT, {
+			ext: 'md'
+		}, content);
+	});
 }
-
-var camping = false;
 
 function init(treeid, vid) {
 	Menu.init();
 	$('#biblio-dir-search').val('');
 	$('.biblio-menu').width($('#biblio-outer').width() - 15);
 	parseBiblio(treeid, vid, context => {
-		SITE_CONTEXT = readme(context);
+		SITE_CONTEXT = context;
+		readme();
 		if (context.trackid) {
 			var trackurl = 'https://cdn.clustrmaps.com/globe.js?d=' + context.trackid;
-			console.debug("TRACK", trackurl)
+			console.debug("TRACK", trackurl);
 			var t = document.createElement("script");
 			t.type = "text/javascript";
 			t.src = trackurl;
 			$('#biblio-earth').append(t);
 		}
 
-		context.tree.html(LOADING);
 		document.getElementById('biblio-dir-search').addEventListener('compositionstart', () => camping = true);
 		document.getElementById('biblio-dir-search').addEventListener('compositionend', () => camping = false);
-		api_root(context.owner, context.repos, context.dirs, (dir, tree) => {
+		api_root(context, (dir, tree) => {
 			var root = treeNodeDir(dir);
 			tree.every((item, index) => process1(context, item, root));
 			context.tree.treeview({
@@ -216,16 +210,20 @@ function init(treeid, vid) {
 				backColor: 'linen',
 				borderColor: 'burlywood',
 				data: [root],
-				onNodeSelected: (event, data) => {
-					if (data.href) {
-						context.view.html(LOADING);
-						api_content(data.href, content => render(context, data, content));
+				onNodeSelected: (event, node) => {
+					if (node.href) {
+						api_content(node.href, content => render(context, node, content), context.view);
 						context.tree.treeview('collapseAll', {
 							silent: false
 						});
-					} else context.tree.treeview('toggleNodeExpanded', [data.nodeId, {
-						silent: false
-					}]);
+					} else {
+						context.tree.treeview('toggleNodeExpanded', [node.nodeId, {
+							silent: false
+						}]);
+					}
+				},
+				onNodeExpanded: (event, node) => {
+					$('.node-biblio-dir[data-nodeid="' + node.nodeId + '"]')[0].scrollIntoView();
 				},
 				onSearchComplete: (event, results) => {
 					var rs = Object.keys(results).length;
