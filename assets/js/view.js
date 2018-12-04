@@ -1,22 +1,21 @@
 var LOADING = '<div id="lds-div" class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
 
-function parseShelfContext(context, cb) {
+function parseLiblio(context, cb) {
 	var shelfconf;
-	if (/^\w+\.github.io$/.test(context.repos))
-		shelfconf = 'https://' + context.owner + '.github.io/_biblio/shelf.json';
-	else if (context.base)
-		shelfconf = context.base + '/_biblio/shelf.json';
-	else shelfconf = 'https://' + context.owner + '.github.io/' + context.repos + '/_biblio/shelf.json';
+	if (context.base)
+		shelfconf = context.base + '/_biblio/liblio.json';
+	else if (/^\w+\.github.io$/.test(context.repos))
+		shelfconf = 'https://' + context.owner + '.github.io/_biblio/liblio.json';
+	else shelfconf = 'https://' + context.owner + '.github.io/' + context.repos + '/_biblio/liblio.json';
 
-	$.get(shelfconf, shelf_ctx => {
-		if (shelf_ctx.dirs) context.dirs = shelf_ctx.dirs;
-		if (shelf_ctx.exts) context.exts = shelf_ctx.exts;
-		console.debug('context', context);
+	$.get(shelfconf, liblio_json => {
+		Object.assign(context, liblio_json);
+		console.debug('CONTEXT', context);
 		cb(context);
 	}).fail(() => cb(context));
 }
 
-function parseContext(treeid, viewid, cb) {
+function parseBiblio(treeid, viewid, cb) {
 	var default_ctx = {
 		tree: $(treeid),
 		view: $(viewid),
@@ -38,7 +37,7 @@ function parseContext(treeid, viewid, cb) {
 		}
 	}
 
-	var qs_ctx = {}
+	var qs_ctx = {};
 	var qs = window.location.search.substr(1).split('&');
 	for (var i = 0; i < qs.length; i++) {
 		var a = qs[i].split('=');
@@ -63,7 +62,7 @@ function parseContext(treeid, viewid, cb) {
 	}
 
 
-	$.get(window.location.origin + '/_biblio/shelf.json', json_ctx => parseShelfContext(Object.assign(default_ctx, json_ctx, url_ctx, qs_ctx), cb)).fail(() => parseShelfContext(Object.assign(default_ctx, url_ctx, qs_ctx), cb));
+	$.get(window.location.origin + '/_biblio/liblio.json', biblio_json => parseLiblio(Object.assign(default_ctx, biblio_json, url_ctx, qs_ctx), cb)).fail(() => parseLiblio(Object.assign(default_ctx, url_ctx, qs_ctx), cb));
 }
 
 function ignorePath(path) {
@@ -190,10 +189,20 @@ function readme(context) {
 var camping = false;
 
 function init(treeid, vid) {
+	Menu.init();
 	$('#biblio-dir-search').val('');
-	$('.biblio-menu').width($(vid).width());
-	parseContext(treeid, vid, context => {
+	$('.biblio-menu').width($('#biblio-outer').width() - 15);
+	parseBiblio(treeid, vid, context => {
 		SITE_CONTEXT = readme(context);
+		if (context.trackid) {
+			var trackurl = 'https://cdn.clustrmaps.com/globe.js?d=' + context.trackid;
+			console.debug("TRACK", trackurl)
+			var t = document.createElement("script");
+			t.type = "text/javascript";
+			t.src = trackurl;
+			$('#biblio-earth').append(t);
+		}
+
 		context.tree.html(LOADING);
 		document.getElementById('biblio-dir-search').addEventListener('compositionstart', () => camping = true);
 		document.getElementById('biblio-dir-search').addEventListener('compositionend', () => camping = false);
@@ -221,11 +230,9 @@ function init(treeid, vid) {
 				onSearchComplete: (event, results) => {
 					var rs = Object.keys(results).length;
 					$('#biblio-dir-search-c').text(rs);
-					if (rs > 0) $('.node-biblio-dir[data-nodeid="' + results[0].nodeId + '"]')[0].scrollIntoView()
+					if (rs > 0) $('.node-biblio-dir[data-nodeid="' + results[0].nodeId + '"]')[0].scrollIntoView();
 				}
 			});
-			$(vid).css('padding-top', $('.biblio-menu').height());
-			console.debug('treeview', 'rendering finished.');
 		});
 	});
 }
@@ -240,7 +247,7 @@ function search(s) {
 			silent: false
 		});
 	} else {
-		console.debug('Search', s);
+		console.debug('SEARCH', s);
 		SITE_CONTEXT.tree.treeview('search', [s, {
 			ignoreCase: true, // case insensitive
 			exactMatch: false, // like or equals
@@ -248,3 +255,18 @@ function search(s) {
 		}]);
 	}
 }
+
+var Menu = {
+	init: function () {
+		$('.biblio-menu-b').on('click', function (event) {
+			Menu.activateMenu(event);
+			$('#biblio-menu-c').toggle();
+			event.preventDefault();
+		});
+	},
+	activateMenu: function () {
+		$('.biblio-menu-b-1').toggleClass('biblio-menu-b-1-click');
+		$('.biblio-menu-b-2').toggleClass('biblio-menu-b-2-click');
+		$('.biblio-menu-b-3').toggleClass('biblio-menu-b-3-click');
+	}
+};
