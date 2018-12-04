@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html id="biblio-html" xmlns="http://www.w3.org/1999/xhtml">
-
 <head profile="http://www.w3.org/2005/10/profile">
 	<title>Biblio</title>
 	<link rel="icon" type="image/png" href="/favicon.ico">
 	<meta name="author" content="butfly,कलविङ्क" />
-	<meta name="keywords" content="book,reader,viewer,markdown,github api,shelf" />
+	<meta name="keywords" content="book,reader,viewer,txt,markdown,github api,shelf" />
 	<meta name="description" content="Biblio: site from github repository" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	<meta charset="UTF-8">
@@ -14,7 +13,6 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 	<!-- public css -->
-	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
 	<link rel="stylesheet" type="text/css" href="/assets/css/loading.css">
 	<!-- public js -->
 	<!-- assets/js/jquery-3.3.1.min.js -->
@@ -27,7 +25,6 @@
 	<script type="text/javascript" src="https://cdn.rawgit.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"></script>
 
 	<!-- private js/css -->
-	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/unbootstrape.css"> -->
 	<link rel="stylesheet" type="text/css" href="/assets/css/fonts.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/view.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/tree.css">
@@ -42,10 +39,9 @@
 
 <body id="biblio-body" onload="init('#biblio-dir', '#biblio-inner');">
 	<div id="biblio-outer">
+		<input type="search" id="biblio-dir-search" value="" placeholder="Search..." oninput="search($('#biblio-dir-search').val());"><span id="biblio-dir-search-c" class="badge">0</span>
+		<a style="margin:1em;float:right;font-size:small;cursor:pointer;" onclick="sessionStorage.clear();readme();" title="Clear the cache and back to homepage.">Restart</a>
 		<div class="biblio-menu">
-			<a style="margin:1em;float:right;font-size:small;cursor:pointer;" onclick="sessionStorage.clear();readme();" title="Clear the cache and back to homepage.">Restart</a>
-			<input type="search" id="biblio-dir-search" value="" placeholder="Search..." oninput="search($('#biblio-dir-search').val());">
-			<span id="biblio-dir-search-c" class="badge">0</span>
 			<div id="biblio-dir"></div>
 		</div>
 		<article id="biblio-inner"></article>

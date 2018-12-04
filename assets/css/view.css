@@ -6,7 +6,7 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 
 #biblio-outer {max-width:60em;border:4px double burlywood;background-color:linen;padding:0.5em;margin:0.5em auto;}
 #biblio-outer a {color:peru;text-decoration:none;}
-#biblio-outer input {border:1px solid burlywood;width:20em;line-height:2em;font-size:large;padding-left:0.5em;}
+#biblio-outer input {border:1px solid burlywood;width:70%;line-height:2em;font-size:large;padding-left:0.5em;}
 #biblio-outer #biblio-dir-search-c {margin-left:-3em;}
 
 #biblio-inner {padding:1em;border:1px solid burlywood;page-break-inside:auto;font-family:Merriweather,STXinwei,STLiti,STKaiti,"楷体",FangSong,PMingLiU;font-size:medium;}

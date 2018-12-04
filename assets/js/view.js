@@ -34,7 +34,7 @@ function parseContext(treeid, viewid, cb) {
 		var segs = match[1].split('/');
 		if (segs.length > 1) { // contain repos and folder
 			url_ctx.repos = segs[0];
-			url_ctx.dirs = [segs[1]];
+			url_ctx.dirs = [decodeURI(segs[1])];
 		}
 	}
 
@@ -50,7 +50,8 @@ function parseContext(treeid, viewid, cb) {
 				qs_ctx.repos = a[1];
 				break;
 			case 'd':
-				qs_ctx.dirs = a[1].split('|');
+				qs_ctx.dirs = [];
+				a[1].split('|').forEach(d => qs_ctx.dirs.push(decodeURI(d)));
 				break;
 			case 'x':
 				qs_ctx.exts = a[1].split(',');
