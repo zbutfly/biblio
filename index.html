@@ -23,7 +23,7 @@
 	<!--assets/js/base64.min.js -->
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/dankogai/js-base64/base64.min.js"></script>
 	<!-- assets/js/showdown-min.js -->
-	<script type="text/javascript" src="https://cdn.rawgit.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/showdownjs/showdown@1.9.0/dist/showdown.min.js"></script>
 
 	<!-- private js/css -->
 	<link rel="stylesheet" type="text/css" href="assets/css/fonts.css">
@@ -47,7 +47,7 @@
 			</div>
 			<div id="biblio-menu-c" style="display:none;">
 				<a id="biblio-restart" onclick="localStorage.clear();readme();" title="Clear the cache and back to homepage.">Restart</a>
-				<input id="biblio-dir-search" type="search" value="" placeholder="Search..." oninput="search($('#biblio-dir-search').val());">
+				<input id="biblio-dir-search" type="search" value="" placeholder="Search...">
 				<span id="biblio-dir-search-c" class="badge">0</span>
 				<div id="biblio-dir"></div>
 			</div>

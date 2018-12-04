@@ -4,13 +4,13 @@ function parseLiblio(context, cb) {
 		shelfconf = context.base + '/_biblio/liblio.json';
 	else if (/^\w+\.github.io$/.test(context.repos))
 		shelfconf = 'https://' + context.owner + '.github.io/_biblio/liblio.json';
-	else shelfconf = 'https://' + context.owner + '.github.io/' + context.repos + '/_biblio/liblio.json';
-
-	$.get(shelfconf, liblio_json => {
+	// else shelfconf = 'https://' + context.owner + '.github.io/' + context.repos + '/_biblio/liblio.json';
+	if (shelfconf) $.get(shelfconf, liblio_json => {
 		Object.assign(context, liblio_json);
 		console.debug('CONTEXT', context);
 		cb(context);
 	}).fail(() => cb(context));
+	else cb(context);
 }
 
 function parseBiblio(treeid, viewid, cb) {
@@ -198,8 +198,14 @@ function init(treeid, vid) {
 			$('#biblio-earth').append(t);
 		}
 
-		document.getElementById('biblio-dir-search').addEventListener('compositionstart', () => camping = true);
-		document.getElementById('biblio-dir-search').addEventListener('compositionend', () => camping = false);
+		$('#biblio-dir-search').on('compositionstart', () => camping = true);
+		$('#biblio-dir-search').on('compositionend', () => {
+			camping = false;
+			search($('#biblio-dir-search').val());
+		});
+		$('#biblio-dir-search').on('input', () => {
+			search($('#biblio-dir-search').val());
+		});
 		api_root(context, (dir, tree) => {
 			var root = treeNodeDir(dir);
 			tree.every((item, index) => process1(context, item, root));
@@ -223,7 +229,8 @@ function init(treeid, vid) {
 					}
 				},
 				onNodeExpanded: (event, node) => {
-					$('.node-biblio-dir[data-nodeid="' + node.nodeId + '"]')[0].scrollIntoView();
+					var n = $('.node-biblio-dir[data-nodeid="' + node.nodeId + '"]');
+					if (n.length > 0) n[0].scrollIntoView();
 				},
 				onSearchComplete: (event, results) => {
 					var rs = Object.keys(results).length;

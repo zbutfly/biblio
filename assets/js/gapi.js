@@ -14,7 +14,7 @@ function api(url, cb, ele) {
 		error: (xhr, msg, ex) => console.error(msg),
 		xhrFields: {
 			onprogress: function (progress) {
-				if (progress.loaded) {
+				if (ele && progress.loaded) {
 					var lds = ele[0].children[0].children;
 					lds[lds.length - 1].innerHTML = progress.loaded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 				} else console.debug('PROGRESS', process);
