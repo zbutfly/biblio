@@ -70,7 +70,3 @@ function api_tree(cache_key, dirmeta, cb, tree) {
 		cb(dirmeta.name, resp.tree);
 	}, tree);
 }
-
-function api_readme(context, cb) {
-	api_content('https://api.github.com/repos/' + context.owner + '/' + context.repos + '/readme/', cb, context.view);
-}

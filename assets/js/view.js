@@ -6,10 +6,19 @@ function parseLiblio(context, cb) {
 		else context.base = 'https://' + context.owner + '.github.io/' + context.repos;
 	}
 	shelfconf = context.base + '/_biblio/liblio.json';
-	if (shelfconf) $.get(shelfconf, liblio_json => {
-		Object.assign(context, liblio_json);
-		console.debug('CONTEXT', context);
-		cb(context);
+	if (shelfconf) $.ajax({
+		url: shelfconf,
+		success: liblio_json => {
+			Object.assign(context, liblio_json);
+			console.debug('CONTEXT', context);
+			cb(context);
+		},
+		dataType: 'json',
+		statusCode: {
+			301: function () {
+				debugger;
+			}
+		}
 	}).fail(() => cb(context));
 	else cb(context);
 }
@@ -85,7 +94,7 @@ function treeNodeDir(dirname) {
 
 var UNITS = ['B', 'K', 'M', 'G'];
 
-function treeNodeFile(context, filename, item, names) {
+function treeNodeFile(context, dir, filename, item, names) {
 	var title = filename.substr(0, filename.lastIndexOf('.'));
 	var ext = filename.substr(filename.lastIndexOf('.') + 1).toLowerCase();
 	if (context.exts.indexOf(ext) < 0) return null;
@@ -99,6 +108,7 @@ function treeNodeFile(context, filename, item, names) {
 		text: title,
 		tags: [ /*names.join('/'), */ size.toFixed() + ' ' + UNITS[u], ext],
 		ext: ext,
+		biblioPath: dir + '/' + item.path,
 		size: item.size,
 		href: item.url,
 		state: {
@@ -117,31 +127,52 @@ function parseTitle(context) {
 	}
 }
 
-function render(context, data, txt) {
-	switch (data.ext) {
+function render(context, node) {
+	switch (node.ext) {
 		case 'txt':
-			context.view.html('<pre style="color:unset;margin-left:unset;max-width:unset;">' + txt + '</pre>');
-			document.title = '《' + data.text + '》 - Biblio';
+			api_content(node.href, content => {
+				context.view.html('<pre style="color:unset;margin-left:unset;max-width:unset;">' + content + '</pre>');
+				document.title = '《' + node.text + '》 - Biblio';
+			}, context.view);
 			return;
 		case 'md':
-			var html = new showdown.Converter({
-				tables: true,
-				strikethrough: true
-			}).makeHtml(txt);
-			context.view.html(html);
-			document.title = '《' + (parseTitle(context) || data.text) + '》 - Biblio';
+			api_content(node.href, content => {
+				var html = new showdown.Converter({
+					tables: true,
+					strikethrough: true
+				}).makeHtml(content);
+				context.view.html(html);
+				document.title = '《' + (parseTitle(context) || node.text) + '》 - Biblio';
+			}, context.view);
 			return;
-		case 'html':
 		case 'htm':
-			context.view.html(html);
+			api_content(node.href, content => context.view.html(html), context.view);
+			return;
+		case 'pdf':
+			return;
+		case 'epub':
+			api_content(node.href, content => {
+				// var target = ePub(context.base + '/' + node.biblioPath);
+				// target = 'https://zbutfly.github.io/biblio/sample/%E5%A8%B6%E4%B8%AA%E5%A7%90%E5%A7%90%E5%BD%93%E8%80%81%E5%A9%86_%E8%87%B311%E5%8D%B7%E9%98%B4%E5%BD%B1%E8%B0%B7%E7%AF%87%E5%AE%8C.epub';
+				var book = new ePubReader("data:application+zip;base64," + content);
+				var rendition = book.renderTo("biblio-inner", {
+					method: "default",
+					width: "100%",
+					height: "100%"
+				});
+				var displayed = rendition.display();
+			}, context.view);
+
+			return;
+		case 'mobi':
 			return;
 		default:
-			context.view.text(data.ext + ' is not supportted');
+			context.view.text(node.ext + ' is not supportted');
 			return;
 	}
 }
 
-function process1(context, item, root) {
+function process1(context, dir, item, root) {
 	var names = item.path.split('/'),
 		filename = names.pop(),
 		p = root;
@@ -163,7 +194,7 @@ function process1(context, item, root) {
 			n = treeNodeDir(filename);
 			break;
 		case 'blob':
-			n = treeNodeFile(context, filename, item, names);
+			n = treeNodeFile(context, dir, filename, item, names);
 			break;
 	}
 	if (null !== n) {
@@ -176,10 +207,9 @@ function process1(context, item, root) {
 var SITE_CONTEXT, camping = false;
 
 function readme() {
-	api_readme(SITE_CONTEXT, content => {
-		render(SITE_CONTEXT, {
-			ext: 'md'
-		}, content);
+	render(SITE_CONTEXT, {
+		ext: 'md',
+		href: 'https://api.github.com/repos/' + SITE_CONTEXT.owner + '/' + SITE_CONTEXT.repos + '/readme/'
 	});
 }
 
@@ -192,9 +222,9 @@ function init(treeid, vid) {
 		readme();
 		if (context.trackid) {
 			var trackurl = 'https://cdn.clustrmaps.com/globe.js?d=' + context.trackid;
-			console.debug("TRACK", trackurl);
-			var t = document.createElement("script");
-			t.type = "text/javascript";
+			console.debug('TRACK', trackurl);
+			var t = document.createElement('script');
+			t.type = 'text/javascript';
 			t.src = trackurl;
 			$('#biblio-earth').append(t);
 		}
@@ -209,7 +239,7 @@ function init(treeid, vid) {
 		});
 		api_root(context, (dir, tree) => {
 			var root = treeNodeDir(dir);
-			tree.every((item, index) => process1(context, item, root));
+			tree.every((item, index) => process1(context, dir, item, root));
 			context.tree.treeview({
 				levels: 1,
 				// enableLinks: true,
@@ -219,7 +249,7 @@ function init(treeid, vid) {
 				data: [root],
 				onNodeSelected: (event, node) => {
 					if (node.href) {
-						api_content(node.href, content => render(context, node, content), context.view);
+						render(context, node);
 						context.tree.treeview('collapseAll', {
 							silent: false
 						});
