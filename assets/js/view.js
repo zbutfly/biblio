@@ -1,10 +1,11 @@
 function parseLiblio(context, cb) {
 	var shelfconf;
-	if (context.base)
-		shelfconf = context.base + '/_biblio/liblio.json';
-	else if (/^\w+\.github.io$/.test(context.repos))
-		shelfconf = 'https://' + context.owner + '.github.io/_biblio/liblio.json';
-	// else shelfconf = 'https://' + context.owner + '.github.io/' + context.repos + '/_biblio/liblio.json';
+	if (!context.base) {
+		if (/^\w+\.github.io$/.test(context.repos)) // liblio is a root github site of the owner.
+			context.base = 'https://' + context.owner + '.github.io'
+		else context.base = 'https://' + context.owner + '.github.io/' + context.repos;
+	}
+	shelfconf = context.base + '/_biblio/liblio.json';
 	if (shelfconf) $.get(shelfconf, liblio_json => {
 		Object.assign(context, liblio_json);
 		console.debug('CONTEXT', context);
