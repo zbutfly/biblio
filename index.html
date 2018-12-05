@@ -46,7 +46,12 @@
 				<span class="biblio-menu-b-global biblio-menu-b-3"></span>
 			</div>
 			<div id="biblio-menu-c" style="display:none;">
-				<a id="biblio-restart" onclick="localStorage.clear();readme();" title="Clear the cache and back to homepage.">Restart</a>
+				<div id="biblio-func">
+					<a id="biblio-restart" onclick="localStorage.clear();readme();" class="glyphicon glyphicon-off" title="Clear the cache and back to homepage."></a>
+					<a id="biblio-font-minus" onclick="fontsize(false);" class="glyphicon glyphicon-zoom-out" title="Decrease font size."></a>
+					<a id="biblio-font-reset" onclick="fontsize();" class="glyphicon glyphicon-asterisk" title="Reset font size."></a>
+					<a id="biblio-font-plus" onclick="fontsize(true);" class="glyphicon glyphicon-zoom-in" title="Increase font size."></a>
+				</div>
 				<input id="biblio-dir-search" type="search" value="" placeholder="Search...">
 				<span id="biblio-dir-search-c" class="badge">0</span>
 				<div id="biblio-dir"></div>

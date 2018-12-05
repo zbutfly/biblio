@@ -261,6 +261,16 @@ function search(s) {
 	}
 }
 
+function fontsize(zoom) {
+	if (undefined === zoom) SITE_CONTEXT.view.css('font-size', '');
+	else {
+		var size = parseInt(SITE_CONTEXT.view.css('font-size'));
+		u = SITE_CONTEXT.view.css('font-size').substr(size.toString().length);
+		size = (size * (zoom ? 1.25 : 0.75)).toFixed();
+		SITE_CONTEXT.view.css('font-size', size + u)
+	}
+}
+
 var Menu = {
 	init: function () {
 		$('.biblio-menu-b').on('click', function (event) {

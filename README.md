@@ -26,7 +26,7 @@ So Configuration is splitted into two. Configuration file should be placed under
 
 - `_biblio/liblio.json`: main configuration of the liblio site.
 
-Configurations can also be overrided by url parameters (query string), so that you can directly access your `liblio` repository by this site url with just customizing query string (refer to the `security` section for tracking).
+Configurations can also be overrided by url parameters (query string), so that you can directly access your `liblio` repository by this site url with just customizing query string (refer to the [`Security`](#security) section for tracking).
 
 The starter page of `biblio` site will be the README of your `liblio` repository.
 
