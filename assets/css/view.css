@@ -69,3 +69,9 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 .biblio-menu-b-1-click {backface-visibility:hidden;top:10px;transform:rotate(45deg);transition:0.55s 0.5s;}
 .biblio-menu-b-2-click {opacity:0;}
 .biblio-menu-b-3-click {backface-visibility:hidden;top:10px;transform:rotate(-405deg);transition:0.55s 0.5s;}
+
+/* logger */
+#biblio-info-div {margin:1em 2em;position:absolute;bottom:0;right:0;color:burlywood;width:70%;font-size:small;}
+.biblio-info {background-color:white;padding:0.5em 1em;margin:0.5em;border:1px solid burlywood;}
+.biblio-info-warn {background-color:white;}
+.biblio-info-error {color:red;background-color:white;}

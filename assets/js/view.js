@@ -47,10 +47,10 @@ class Biblio {
 			showTags: true,
 			backColor: 'linen',
 			borderColor: 'burlywood',
-			data: [root],
+			data: root.nodes,
 			onNodeSelected: (event, node) => {
 				if (node.href) {
-					this.render(node);
+					this.display(node);
 					this.context.tree.treeview('collapseAll', {
 						silent: false
 					});
@@ -124,7 +124,7 @@ class Biblio {
 		}
 	}
 
-	render(node) {
+	display(node) {
 		switch (node.ext) {
 			case 'txt':
 				this.api.getContent(node.href, content => {
@@ -213,7 +213,7 @@ class Biblio {
 	}
 
 	readme() {
-		this.render({
+		this.display({
 			ext: 'md',
 			href: 'https://api.github.com/repos/' + this.context.owner + '/' + this.context.repos + '/readme/'
 		});
@@ -230,7 +230,7 @@ class Biblio {
 				silent: false
 			});
 		} else {
-			console.debug('SEARCH', s);
+			Biblio.log('SEARCH' + s, 'debug');
 			this.context.tree.treeview('search', [s, {
 				ignoreCase: true, // case insensitive
 				exactMatch: false, // like or equals
@@ -251,12 +251,22 @@ class Biblio {
 	track() {
 		if (this.context.trackid) {
 			var trackurl = 'https://cdn.clustrmaps.com/globe.js?d=' + this.context.trackid;
-			console.debug('TRACK', trackurl);
+			Biblio.log('TRACK: ' + trackurl, 'debug');
 			var t = document.createElement('script');
 			t.type = 'text/javascript';
 			t.src = trackurl;
 			$('#biblio-earth').append(t);
 		}
+	}
+
+	static log(msg, level) {
+		var t = '2000';
+		var uid = 'biblio-info-' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			var r = Math.random() * 16 | 0;
+			return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+		});
+		var ele = $('<div id="' + uid + '" class="biblio-info biblio-info-' + level + '"></div>').hide().text(msg);
+		ele.appendTo($('#biblio-info-div')).fadeIn(t, 'linear', (e) => setTimeout(() => ele.fadeOut(t, 'linear', () => ele.remove()), t * 2));
 	}
 }
 
