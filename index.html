@@ -4,7 +4,7 @@
 	<title>Biblio</title>
 	<link rel="icon" type="image/png" href="favicon.ico">
 	<meta name="author" content="butfly,कलविङ्क" />
-	<meta name="keywords" content="book,reader,viewer,txt,markdown,github api,shelf" />
+	<meta name="keywords" content="liblio,biblio,book,reader,viewer,txt,markdown,github api,shelf,static,html5,css3,javascript,js" />
 	<meta name="description" content="Biblio: site from github repository" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	<meta charset="UTF-8">
@@ -30,8 +30,10 @@
 
 	<!-- private js/css -->
 	<link rel="stylesheet" type="text/css" href="assets/css/fonts.css">
-	<link rel="stylesheet" type="text/css" href="assets/css/view.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/glyphicon.css">
 	<link rel="stylesheet" type="text/css" href="assets/css/tree.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/view.css">
+	<script type="text/javascript" src="assets/js/context.js"></script>
 	<script type="text/javascript" src="assets/js/gapi.js"></script>
 	<script type="text/javascript" src="assets/js/view.js"></script>
 
@@ -39,8 +41,11 @@
 		#tree,#tree .badge {font-size:small;}
 		#tree {padding:1em;float:left;display:inline-flex;max-width:40em;}
 	</style>
+	<script>
+		$(document).ready(() => new Biblio());
+	</script>
 </head>
-<body id="biblio-body" onload="init('#biblio-dir', '#biblio-inner');">
+<body id="biblio-body">
 	<div id="biblio-outer">
 		<div class="biblio-menu">
 			<div class="biblio-menu-b" title="Toggle search and directories tree show/hide.">
@@ -50,10 +55,10 @@
 			</div>
 			<div id="biblio-menu-c" style="display:none;">
 				<div id="biblio-func">
-					<a id="biblio-restart" onclick="localStorage.clear();readme();" class="glyphicon glyphicon-off" title="Clear the cache and back to homepage."></a>
-					<a id="biblio-font-minus" onclick="fontsize(false);" class="glyphicon glyphicon-zoom-out" title="Decrease font size."></a>
-					<a id="biblio-font-reset" onclick="fontsize();" class="glyphicon glyphicon-asterisk" title="Reset font size."></a>
-					<a id="biblio-font-plus" onclick="fontsize(true);" class="glyphicon glyphicon-zoom-in" title="Increase font size."></a>
+					<a id="biblio-restart" class="glyphicon glyphicon-off" title="Clear the cache and back to homepage."></a>
+					<a id="biblio-font-minus" class="glyphicon glyphicon-zoom-out" title="Decrease font size."></a>
+					<a id="biblio-font-reset" class="glyphicon glyphicon-asterisk" title="Reset font size."></a>
+					<a id="biblio-font-plus" class="glyphicon glyphicon-zoom-in" title="Increase font size."></a>
 				</div>
 				<input id="biblio-dir-search" type="search" value="" placeholder="Search...">
 				<span id="biblio-dir-search-c" class="badge">0</span>
