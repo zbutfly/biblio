@@ -13,6 +13,7 @@ class Biblio {
 		});
 		$('#biblio-restart').on('click', () => {
 			localStorage.clear();
+			Biblio.info('RESET all cache cleared', 'info');
 			this.readme();
 		});
 		$('#biblio-font-minus').on('click', () => this.zoom(false));
@@ -29,12 +30,12 @@ class Biblio {
 		this.readme();
 		this.track();
 
-		$('#biblio-dir-search').on('compositionstart', () => camping = true);
+		$('#biblio-dir-search').on('compositionstart', () => this.camping = true);
 		$('#biblio-dir-search').on('compositionend', () => {
-			camping = false;
-			search($('#biblio-dir-search').val());
+			this.camping = false;
+			this.search($('#biblio-dir-search').val());
 		});
-		$('#biblio-dir-search').on('input', () => search($('#biblio-dir-search').val()));
+		$('#biblio-dir-search').on('input', () => this.search($('#biblio-dir-search').val()));
 		this.api.getRoot((dir, tree) => this.treeview(dir, tree));
 	}
 
@@ -68,6 +69,8 @@ class Biblio {
 				var rs = Object.keys(results).length;
 				$('#biblio-dir-search-c').text(rs);
 				if (rs > 0) $('.node-biblio-dir[data-nodeid="' + results[0].nodeId + '"]')[0].scrollIntoView();
+				debugger;
+				Biblio.info('SEARCH completed with ' + rs + ' matched.');
 			}
 		});
 	}
@@ -221,7 +224,7 @@ class Biblio {
 
 
 	search(s) {
-		if (camping) return;
+		if (this.camping) return;
 		s = (s || '').trim();
 		if (s === '') {
 			this.context.tree.treeview('clearSearch');
@@ -230,7 +233,7 @@ class Biblio {
 				silent: false
 			});
 		} else {
-			Biblio.log('SEARCH' + s, 'debug');
+			Biblio.info('SEARCH [' + s + '] started.', 'debug');
 			this.context.tree.treeview('search', [s, {
 				ignoreCase: true, // case insensitive
 				exactMatch: false, // like or equals
@@ -251,7 +254,7 @@ class Biblio {
 	track() {
 		if (this.context.trackid) {
 			var trackurl = 'https://cdn.clustrmaps.com/globe.js?d=' + this.context.trackid;
-			Biblio.log('TRACK: ' + trackurl, 'debug');
+			Biblio.info('TRACK appended with [' + this.context.trackid + '].', 'debug');
 			var t = document.createElement('script');
 			t.type = 'text/javascript';
 			t.src = trackurl;
@@ -259,14 +262,25 @@ class Biblio {
 		}
 	}
 
-	static log(msg, level) {
-		var t = '2000';
-		var uid = 'biblio-info-' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-			var r = Math.random() * 16 | 0;
-			return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-		});
-		var ele = $('<div id="' + uid + '" class="biblio-info biblio-info-' + level + '"></div>').hide().text(msg);
-		ele.appendTo($('#biblio-info-div')).fadeIn(t, 'linear', (e) => setTimeout(() => ele.fadeOut(t, 'linear', () => ele.remove()), t * 2));
+	static info(msg, level) {
+		switch (level.toLowerCase()) {
+			case 'info':
+			case 'debug':
+			case 'warn':
+			case 'error':
+				var t = '2000';
+				var uid = 'biblio-info-' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+					var r = Math.random() * 16 | 0;
+					return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+				});
+				var ele = $('<div id="' + uid + '" class="biblio-info biblio-info-' + level + '"></div>').hide().text(msg);
+				ele.appendTo($('#biblio-info-div')).fadeIn(t, 'linear', (e) => setTimeout(() => ele.fadeOut(t, 'linear', () => ele.remove()), t * 2));
+				break;
+			case 'trace':
+			default:
+				console.log(msg);
+				break;
+		}
 	}
 }
 

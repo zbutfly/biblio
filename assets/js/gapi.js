@@ -12,33 +12,40 @@ class GitHubAPI {
 				'Accept': 'application/vnd.github.v3+json'
 			},
 			success: cb,
-			error: (xhr, msg, ex) => Biblio.log(msg, 'error'),
+			error: (xhr, msg, ex) => Biblio.info('GAPI error of [' + this._info(url) + ']:\n' + msg, 'error'),
 			xhrFields: {
 				onprogress: function (progress) {
-					if (!progress) Biblio.log('PROGRESS: ' + url + ' ... ', 'debug');
+					if (!progress) Biblio.info('GAPI progress of [' + this._info(url) + ']...', 'trace');
 					else if (ele && progress.loaded) {
 						var lds = ele[0].children[0].children;
 						lds[lds.length - 1].innerHTML = progress.loaded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-					} else Biblio.log('PROGRESS' + url + '\n' + progress, 'debug');
+					} else Biblio.info('GAPI progress of [' + this._info(url) + ']:\n' + progress, 'trace');
 				}
 			}
 		});
 	}
 
+	_info(url) {
+		var m = /\/([^\/]+)\/?$/.exec(url);
+		if (m !== null && m.length > 0)
+			return m[1];
+		else return url;
+	}
+
 	getContent(href, cb, view) {
 		var c = localStorage.getItem(href);
 		if (null === c) {
-			Biblio.log('GAPI: Content cache not found, fetch from ' + href, 'debug');
+			Biblio.info('GAPI content [' + this._info(href) + '] fetching.', 'debug');
 			this.api(href, resp => {
 				try {
 					localStorage.setItem(href, resp.content);
 				} catch (err) {
-					Biblio.log('CACHE' + err, 'warn');
+					Biblio.info('GAPI content [' + this._info(href) + '] fetched [' + resp.content.length + '] but cache fail: ' + err, 'warn');
 				}
 				cb(Base64.decode(resp.content));
 			}, view);
 		} else {
-			Biblio.log('GAPI: Content cache found for key:' + href, 'debug');
+			Biblio.info('GAPI content [' + this._info(href) + '] cached.', 'debug');
 			cb(Base64.decode(c));
 		}
 	}
@@ -47,27 +54,23 @@ class GitHubAPI {
 		var cache_key = 'github-api:' + this.context.owner + '/' + this.context.repos + '/' + this.context.shelf;
 		var cache = localStorage.getItem(cache_key);
 		if (cache !== null) {
-			Biblio.log('GAPI: Tree cache found for key:' + cache_key, 'debug');
+			Biblio.info('GAPI tree [' + cache_key + '] cached.', 'debug');
 			cb(this.context.shelf, JSON.parse(cache).tree);
 		} else {
 			var href = 'https://api.github.com/repos/' + this.context.owner + '/' + this.context.repos + '/contents/';
-			Biblio.log('GAPI: Tree cache not found, fetch from ' + href, 'debug');
+			Biblio.info('GAPI tree [' + cache_key + '] fetching.', 'debug');
 			this.api(href, resp => resp.every((dir_meta, index) => {
 				// filter and ignore prefix for internal items.
 				if (Biblio.isIgnored(dir_meta.name) || dir_meta.type !== 'dir' || this.context.shelf !== dir_meta.name) return true;
-				this.getTree(cache_key, dir_meta, cb, this.context.tree);
+				this.api(dir_meta.git_url + '?recursive=1', resp => {
+					localStorage.setItem(cache_key, JSON.stringify(resp));
+					Biblio.info('GAPI tree [' + cache_key + '] fetched [' + resp.tree.length + '] items.', 'debug');
+					if (resp.truncated) alert('truncated for folder is too large, please switch to GIT SITE or GIT RAW mode.');
+					cb(dir_meta.name, resp.tree);
+				}, this.context.tree);
 				return true;
 			}));
 		}
-	}
-
-	getTree(cache_key, dir_meta, cb, tree) {
-		this.api(dir_meta.git_url + '?recursive=1', resp => {
-			localStorage.setItem(cache_key, JSON.stringify(resp));
-			Biblio.log('GAPI: ' + resp.tree.length + ' items loaded in ' + resp.url + '.', 'debug');
-			if (resp.truncated) alert('truncated for folder is too large, please switch to GIT SITE or GIT RAW mode.');
-			cb(dir_meta.name, resp.tree);
-		}, tree);
 	}
 
 	getLiblio(cb) {

@@ -4,21 +4,29 @@
 html {width:100%;}
 header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-size:small;text-align:right;margin-right:1em;}
 
+.biblio-info,
+#biblio-inner,
+#biblio-inner hr,
+#biblio-inner td,
+#biblio-outer input,
+#biblio-inner div.expr-block,
+#biblio-outer .biblio-foot-a,
+#biblio-outer #biblio-func {border: 1px solid burlywood;}
+
 #biblio-outer {max-width:60em;border:4px double burlywood;background-color:linen;padding:0.5em;margin:0.5em auto;}
 #biblio-outer a {color:peru;text-decoration:none;}
-#biblio-outer input {border:1px solid burlywood;width:40%;line-height:2em;font-size:large;padding-left:0.5em;margin-bottom:0.2em;}
+#biblio-outer input {width:40%;line-height:2em;font-size:large;padding-left:0.5em;margin-bottom:0.2em;}
 #biblio-outer #biblio-dir-search-c {margin-left:0.5em;}
-#biblio-outer #biblio-func {float:right;text-align:center;background-color:white;border:1px solid burlywood;padding:0.3em 0.5em;margin-right:0.3em;}
+#biblio-outer #biblio-func {float:right;text-align:center;background-color:white;padding:0.3em 0.5em;margin-right:0.3em;}
 #biblio-outer #biblio-func .glyphicon {font-size:1.2em;margin:0.2em;}
-#biblio-outer .biblio-foot-a {float:left;margin:2em;font-size:small;padding:0.5em;border:1px solid burlywood;}
+#biblio-outer .biblio-foot-a {float:left;margin:2em;font-size:small;padding:0.5em;}
 
-#biblio-inner {padding:1em;border:1px solid burlywood;page-break-inside:auto;font-family:Merriweather,STXinwei,STLiti,STKaiti,"楷体",FangSong,PMingLiU;font-size:medium;min-height:35em;}
+#biblio-inner {padding:8px;page-break-inside:auto;font-family:Merriweather,STXinwei,STLiti,STKaiti,"楷体",FangSong,PMingLiU;font-size:medium;min-height:35em;}
 #biblio-inner table,
 #biblio-inner th,
-#biblio-inner td {border:1px solid burlywood;border-collapse:collapse;padding:0.2em 1em;font-size:small;}
+#biblio-inner td {border-collapse:collapse;padding:0.2em 1em;font-size:small;}
 #biblio-inner th {text-align:center;}
 #biblio-inner td {text-align:left;}
-#biblio-inner hr {border:1px solid burlywood;}
 
 #biblio-inner h1 {margin-bottom:0;}
 #biblio-inner h2 {width:65%;margin:0 0 1.2em 0;padding:1em 0 0.5em 1em;border-bottom:2px solid gray;}
@@ -31,7 +39,7 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 #biblio-inner ul.toc-list a {color:darkslategrey;}
 #biblio-inner div.paragraph {page-break-inside:avoid;}
 
-#biblio-inner div.expr-block {border:1px solid burlywood;margin-top:0.5em;margin-bottom:0.5em;padding:0.5em;page-break-inside:avoid;}
+#biblio-inner div.expr-block {margin-top:0.5em;margin-bottom:0.5em;padding:0.5em;page-break-inside:avoid;}
 #biblio-inner div.expr-block h3 a {color:inherit;}
 #biblio-inner div.expr-block h4 {margin-top:0.6em;}
 #biblio-inner div.expr-block p {padding-left:1em;margin-bottom:0.3em;}
@@ -41,10 +49,10 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 .switcher-c td {padding:0.5em;width:25em;color:peru;}
 .switcher-c .switcher-span {cursor:pointer;margin-left:0.3em;}
 
-#biblio-inner blockquote {color:DarkKhaki;}
+#biblio-inner blockquote {color:darkkhaki;}
 #biblio-inner sup,
 #biblio-inner pre sub,
-#biblio-inner pre sup {color:DarkKhaki;}
+#biblio-inner pre sup {color:darkkhaki;}
 #biblio-inner sub,
 #biblio-inner sup {font-weight:normal;}
 #biblio-inner code,
@@ -72,6 +80,7 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 
 /* logger */
 #biblio-info-div {margin:1em 2em;position:absolute;bottom:0;right:0;color:burlywood;width:70%;font-size:small;}
-.biblio-info {background-color:white;padding:0.5em 1em;margin:0.5em;border:1px solid burlywood;}
+.biblio-info {padding:0.5em 1em;margin:0.5em;}
 .biblio-info-warn {background-color:white;}
 .biblio-info-error {color:red;background-color:white;}
+.biblio-info-debug {color:darkkhaki;border-color:darkkhaki}
