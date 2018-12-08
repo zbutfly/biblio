@@ -138,7 +138,7 @@ class Biblio {
 		switch (node.ext) {
 			case 'txt':
 				this.api.getContent(node.href, content => {
-					this.context.view.html('<pre style="color:unset;margin-left:unset;max-width:unset;">' + content + '</pre>');
+					this.context.view.html('<pre style="color:unset;margin-left:unset;max-width:unset;">' + Base64.decode(content) + '</pre>');
 					document.title = '《' + node.text + '》 - Biblio';
 				}, this.context.view);
 				return;
@@ -147,19 +147,18 @@ class Biblio {
 					var html = new showdown.Converter({
 						tables: true,
 						strikethrough: true
-					}).makeHtml(content);
+					}).makeHtml(Base64.decode(content));
 					this.context.view.html(html);
 					document.title = '《' + (this.parseTitle() || node.text) + '》 - Biblio';
 				}, this.context.view);
 				return;
 			case 'htm':
-				this.api.getContent(node.href, content => this.context.view.html(content), this.context.view);
+				this.api.getContent(node.href, content => this.context.view.html(Base64.decode(content)), this.context.view);
 				return;
 			case 'pdf':
-				return;
 			case 'epub':
-				return;
 			case 'mobi':
+				this.displayEpub(node);
 				return;
 			default:
 				this.context.view.text(node.ext + ' is not supportted');
@@ -167,27 +166,27 @@ class Biblio {
 		}
 	}
 
-	renderEpub() {
-		var target = ePub(context.base + '/' + node.biblioPath);
-		// target = 'https://zbutfly.github.io/biblio/sample/%E5%A8%B6%E4%B8%AA%E5%A7%90%E5%A7%90%E5%BD%93%E8%80%81%E5%A9%86_%E8%87%B311%E5%8D%B7%E9%98%B4%E5%BD%B1%E8%B0%B7%E7%AF%87%E5%AE%8C.epub';
-		var book = new ePub("data:application+zip;base64," + content);
-		var rendition = book.renderTo("biblio-inner", {
-			method: "default",
-			width: "100%",
-			height: "100%"
-		});
-		var displayed = rendition.display();
-		// this.api.getContent(node.href, content => {
-		// 	var book = new ePubReader("data:application+zip;base64," + content);
-		// 	var rendition = book.renderTo("biblio-inner", {
-		// 		method: "default",
-		// 		width: "100%",
-		// 		height: "100%"
-		// 	});
-		// 	var displayed = rendition.display();
-		// }, context.view);
-
-
+	displayEpub(node) {
+		this.api.getContent(node.href, content => {
+			Biblio.info('EPUB content [' + content.length + '] loaded.');
+			this.context.view.html('');
+			
+			var book = new ePub();
+			var opened = book.open(content, 'base64').then(() => {
+				Biblio.info('EPUB content [' + node.text + '] opened.');
+				debugger;
+			}, (err) => {
+				Biblio.info('EPUB content [' + node.text + '] opened fail: ' + err + '.', 'error');
+				debugger;
+			});
+			var rendition = book.renderTo("biblio-epub", {
+				method: "continuous",
+				width: "100%",
+				height: "100%"
+			});
+			rendition.start();
+			debugger;
+	}, this.context.view);
 	}
 
 	processTreeItem(dir, item, root) {
@@ -316,6 +315,32 @@ class Biblio {
 				console.trace(msg);
 				break;
 		}
+	}
+
+	static b64toBlob(b64Data, contentType, sliceSize) {
+		contentType = contentType || '';
+		sliceSize = sliceSize || 512;
+
+		var byteCharacters = Base64.decode(b64Data);
+		var byteArrays = [];
+
+		for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+			var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+			var byteNumbers = new Array(slice.length);
+			for (var i = 0; i < slice.length; i++) {
+				byteNumbers[i] = slice.charCodeAt(i);
+			}
+
+			var byteArray = new Uint8Array(byteNumbers);
+
+			byteArrays.push(byteArray);
+		}
+
+		var blob = new Blob(byteArrays, {
+			type: contentType
+		});
+		return blob;
 	}
 }
 

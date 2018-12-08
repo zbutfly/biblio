@@ -66,11 +66,11 @@ class GitHubAPI {
 				} catch (err) {
 					Biblio.info('GAPI content [' + GitHubAPI._info(href) + '] fetched [' + resp.content.length + '] but cache fail: ' + err, 'warn');
 				}
-				cb(Base64.decode(resp.content));
+				cb(resp.content);
 			}, view);
 		} else {
 			Biblio.info('GAPI content [' + GitHubAPI._info(href) + '] cached.');
-			cb(Base64.decode(c));
+			cb(c);
 		}
 	}
 
