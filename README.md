@@ -8,11 +8,11 @@ I writed it for myself. I'm not familiar with page designing so the page customi
 
 Anything is fetched from github repository (or github pages) by javascript, through the great restful `github api v3`.
 
-The site contain an small [sample `liblio`](https://biblio.butfly.net/?o=zbutfly&r=biblio&d=sample) as default books for testing.
+The site contain an small [sample `liblio`](https://biblio.butfly.net) as default books for testing.
 
 **My personal `liblio`, which contains some Chinese and Worldwide Classical Literature**:
 
-[Inebriatable Libliotheca - 可醉楼藏书](https://biblio.butfly.net/?s=https://liblio.butfly.net)
+[Inebriatable Libliotheca - 可醉楼藏书](https://biblio.butfly.net#fe63a7cccabfd318da7e322502e1c2fe:inebriatable-libliotheca)
 
 ## Techical
 

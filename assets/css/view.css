@@ -11,7 +11,8 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 #biblio-outer input,
 #biblio-inner div.expr-block,
 #biblio-outer .biblio-foot-a,
-#biblio-outer #biblio-func {border: 1px solid burlywood;}
+#biblio-outer #biblio-func,
+#biblio-gists a {border: 1px solid burlywood;}
 
 #biblio-outer {max-width:60em;border:4px double burlywood;background-color:linen;padding:0.5em;margin:0.5em auto;}
 #biblio-outer a {color:peru;text-decoration:none;}
@@ -77,6 +78,8 @@ header, footer, .header, .footer {margin-top:1em;font-family:Aref Ruqaa;font-siz
 .biblio-menu-b-1-click {backface-visibility:hidden;top:10px;transform:rotate(45deg);transition:0.55s 0.5s;}
 .biblio-menu-b-2-click {opacity:0;}
 .biblio-menu-b-3-click {backface-visibility:hidden;top:10px;transform:rotate(-405deg);transition:0.55s 0.5s;}
+#biblio-gists {text-align:left;line-height:2em;}
+#biblio-gists a {font-size:small;display:block;background:linen;padding:0 0.5em;margin:0.5em;}
 
 /* logger */
 #biblio-info-div {margin:1em 2em;position:absolute;bottom:0;right:0;color:burlywood;width:70%;font-size:small;}

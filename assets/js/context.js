@@ -1,17 +1,24 @@
 class Context {
 	constructor(tree, view) {
-		this.owner = 'zbutfly';
-		this.repos = 'biblio';
-		this.shelf = 'sample';
+		this.gist = 'fe63a7cccabfd318da7e322502e1c2fe';
 		this.tree = $(tree);
 		this.view = $(view);
 		this.exts = ['txt', 'md'];
-		this._priority = Object.assign(Context._href(), Context._querystring());
+		this._priority = Object.assign(Context._href(), Context._querystring(), );
 		Object.assign(this, this._priority);
+		this.hash();
 	}
 
 	merge(context) {
 		return Object.assign(this, context, this._priority);
+	}
+
+	hash() {
+		if ('' !== window.location.hash) {
+			this.gist = window.location.hash.replace(/^#*/g, '');
+			Biblio.info('CONTEXT gist [' + this.gist + '].');
+		}
+		return this;
 	}
 
 	static _href() {
@@ -53,10 +60,11 @@ class Context {
 				case 's':
 					ctx.base = a[1];
 					break;
+				case 'g':
+					ctx.gist = a[1];
+					break;
 			}
 		}
 		return ctx;
 	}
-
-	gist(id) {}
 }

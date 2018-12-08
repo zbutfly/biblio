@@ -1,7 +1,6 @@
 class Biblio {
 	constructor() {
 		this.camping = false;
-
 		$('#biblio-dir-search').val('');
 		$('.biblio-menu').width($('#biblio-outer').width() - 15);
 		$('.biblio-menu-b').on('click', function (event) {
@@ -23,7 +22,8 @@ class Biblio {
 
 		this.context = new Context('#biblio-dir', '#biblio-inner');
 		this.api = new GitHubAPI(this.context);
-		this.api.getLiblio(ctx => this.api.getLiblio(ctx => this.init(ctx)));
+		this.api.getGist(this.context.gist, liblio => this.init(Object.assign(this.context, liblio)), all => this.list(all));
+		$(window).on('hashchange', e => this.api.getGist(this.context.hash().gist, liblio => this.init(Object.assign(this.context, liblio)), all => this.list(all)));
 	}
 
 	init(ctx) {
@@ -36,7 +36,15 @@ class Biblio {
 			this.search($('#biblio-dir-search').val());
 		});
 		$('#biblio-dir-search').on('input', () => this.search($('#biblio-dir-search').val()));
-		this.api.getRoot((dir, tree) => this.treeview(dir, tree));
+		this.api.getRoot(this.context.owner, this.context.repos, this.context.shelf, this.context.tree, (dir, tree) => this.treeview(dir, tree));
+	}
+
+	list(all) {
+		$('#biblio-gists').html('');
+		for (var fn in all) {
+			var ele = '<a href="#' + this.context.gist.split('=')[0] + '=' + encodeURI(fn) + '" title="' + all[fn] + '">' + fn + '</a>';
+			$(ele).appendTo($('#biblio-gists'));
+		}
 	}
 
 	treeview(dir, tree) {
@@ -69,7 +77,6 @@ class Biblio {
 				var rs = Object.keys(results).length;
 				$('#biblio-dir-search-c').text(rs);
 				if (rs > 0) $('.node-biblio-dir[data-nodeid="' + results[0].nodeId + '"]')[0].scrollIntoView();
-				debugger;
 				Biblio.info('SEARCH completed with ' + rs + ' matched.');
 			}
 		});
@@ -222,6 +229,27 @@ class Biblio {
 		});
 	}
 
+	// Deprecated
+	// getLiblio(cb) {
+	// 	if (this.context.gist) this.api.getGist(this.context.gist, liblio => this.init(Object.assign(this.context, liblio)));
+	// 	else this.api.getContent('https://api.github.com/repos/' + this.context.owner + '/' + this.context.repos + '/contents/_biblio/liblio.json', json => {
+	// 		this.context.merge(JSON.parse(json));
+	// 		if (!this.context.base) {
+	// 			if (/^\w+\.github.io$/.test(this.context.repos)) // liblio is a root github site of the owner.
+	// 				this.context.base = 'https://' + this.context.owner + '.github.io'
+	// 			else this.context.base = 'https://' + this.context.owner + '.github.io/' + this.context.repos;
+	// 		}
+	// 		this.api.getContent('https://api.github.com/repos/' + this.context.owner + '/' + this.context.repos + '/contents/_biblio/liblio.json', json => {
+	// 			this.context.merge(JSON.parse(json));
+	// 			if (!this.context.base) {
+	// 				if (/^\w+\.github.io$/.test(this.context.repos)) // liblio is a root github site of the owner.
+	// 					this.context.base = 'https://' + this.context.owner + '.github.io'
+	// 				else this.context.base = 'https://' + this.context.owner + '.github.io/' + this.context.repos;
+	// 			}
+	// 			this.init(this.context);
+	// 		});
+	// 	});
+	// }
 
 	search(s) {
 		if (this.camping) return;
@@ -233,7 +261,7 @@ class Biblio {
 				silent: false
 			});
 		} else {
-			Biblio.info('SEARCH [' + s + '] started.', 'debug');
+			Biblio.info('SEARCH [' + s + '] started.');
 			this.context.tree.treeview('search', [s, {
 				ignoreCase: true, // case insensitive
 				exactMatch: false, // like or equals
@@ -254,15 +282,17 @@ class Biblio {
 	track() {
 		if (this.context.trackid) {
 			var trackurl = 'https://cdn.clustrmaps.com/globe.js?d=' + this.context.trackid;
-			Biblio.info('TRACK appended with [' + this.context.trackid + '].', 'debug');
+			Biblio.info('TRACK appended with [' + this.context.trackid + '].');
 			var t = document.createElement('script');
 			t.type = 'text/javascript';
 			t.src = trackurl;
+			$('#biblio-earth').html('');
 			$('#biblio-earth').append(t);
 		}
 	}
 
 	static info(msg, level) {
+		level = level || 'debug';
 		switch (level.toLowerCase()) {
 			case 'info':
 			case 'debug':
@@ -279,6 +309,11 @@ class Biblio {
 			case 'trace':
 			default:
 				console.log(msg);
+				break;
+		}
+		switch (level.toLowerCase()) {
+			case 'error':
+				console.trace(msg);
 				break;
 		}
 	}
