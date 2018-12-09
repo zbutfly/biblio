@@ -1,51 +1,53 @@
 class Biblio {
 	constructor() {
 		this.camping = false;
+		this.api = new GitHubAPI();
 		$('#biblio-dir-search').val('');
 		$('.biblio-menu').width($('#biblio-outer').width() - 15);
 		$('.biblio-menu-b').on('click', function (event) {
 			$('.biblio-menu-b-1').toggleClass('biblio-menu-b-1-click');
 			$('.biblio-menu-b-2').toggleClass('biblio-menu-b-2-click');
 			$('.biblio-menu-b-3').toggleClass('biblio-menu-b-3-click');
-			$('#biblio-menu-c').toggle();
+			$('#biblio-menu-c').fadeToggle(2000);
 			event.preventDefault();
 		});
 		$('#biblio-restart').on('click', () => {
 			localStorage.clear();
 			Biblio.info('RESET all cache cleared', 'info');
 			this.readme();
+			this.toggleMunu();
 		});
 		$('#biblio-font-minus').on('click', () => this.zoom(false));
 		$('#biblio-font-reset').on('click', () => this.zoom());
 		$('#biblio-font-plus').on('click', () => this.zoom(true));
 
-
 		this.context = new Context('#biblio-dir', '#biblio-inner');
-		this.api = new GitHubAPI(this.context);
-		this.api.getGist(this.context.gist, liblio => this.init(Object.assign(this.context, liblio)), all => this.list(all));
-		$(window).on('hashchange', e => this.api.getGist(this.context.hash().gist, liblio => this.init(Object.assign(this.context, liblio)), all => this.list(all)));
+		this.reload();
+		$(window).on('hashchange', e => this.reload());
 	}
 
-	init(ctx) {
-		this.readme();
-		this.track();
+	reload() {
+		this.api.getGist(this.context.hash().gist, liblio => {
+			Object.assign(this.context, liblio);
+			this.readme();
+			this.track();
 
-		$('#biblio-dir-search').on('compositionstart', () => this.camping = true);
-		$('#biblio-dir-search').on('compositionend', () => {
-			this.camping = false;
-			this.search($('#biblio-dir-search').val());
+			$('#biblio-dir-search').on('compositionstart', () => this.camping = true);
+			$('#biblio-dir-search').on('compositionend', () => {
+				this.camping = false;
+				this.search($('#biblio-dir-search').val());
+			});
+			$('#biblio-dir-search').on('input', () => this.search($('#biblio-dir-search').val()));
+			this.api.getRoot(this.context.owner, this.context.repos, this.context.shelf, this.context.tree, (dir, tree) => this.treeview(dir, tree));
+		}, all => {
+			$('#biblio-gists').html('');
+			for (var fn in all) {
+				var ele = '<a href="#' + this.context.gist.split('=')[0] + '=' + encodeURI(fn) + '" title="' + all[fn] + '">' + fn + '</a>';
+				$(ele).appendTo($('#biblio-gists'));
+			}
 		});
-		$('#biblio-dir-search').on('input', () => this.search($('#biblio-dir-search').val()));
-		this.api.getRoot(this.context.owner, this.context.repos, this.context.shelf, this.context.tree, (dir, tree) => this.treeview(dir, tree));
 	}
 
-	list(all) {
-		$('#biblio-gists').html('');
-		for (var fn in all) {
-			var ele = '<a href="#' + this.context.gist.split('=')[0] + '=' + encodeURI(fn) + '" title="' + all[fn] + '">' + fn + '</a>';
-			$(ele).appendTo($('#biblio-gists'));
-		}
-	}
 
 	treeview(dir, tree) {
 		var root = this.treeNodeDir(dir);
@@ -60,9 +62,10 @@ class Biblio {
 			onNodeSelected: (event, node) => {
 				if (node.href) {
 					this.display(node);
-					this.context.tree.treeview('collapseAll', {
-						silent: false
-					});
+					$('.biblio-menu-b').trigger('click');
+					// this.context.tree.treeview('collapseAll', {
+					// 	silent: false
+					// });
 				} else {
 					this.context.tree.treeview('toggleNodeExpanded', [node.nodeId, {
 						silent: false
@@ -170,7 +173,7 @@ class Biblio {
 		this.api.getContent(node.href, content => {
 			Biblio.info('EPUB content [' + content.length + '] loaded.');
 			this.context.view.html('');
-			
+
 			var book = new ePub();
 			var opened = book.open(content, 'base64').then(() => {
 				Biblio.info('EPUB content [' + node.text + '] opened.');
@@ -186,7 +189,7 @@ class Biblio {
 			});
 			rendition.start();
 			debugger;
-	}, this.context.view);
+		}, this.context.view);
 	}
 
 	processTreeItem(dir, item, root) {
@@ -276,6 +279,7 @@ class Biblio {
 			size = (size * (zoom ? 1.25 : 0.75)).toFixed();
 			this.context.view.css('font-size', size + this.context.view.css('font-size').substr(size.toString().length))
 		}
+		$('#biblio-menu-c').fadeToggle(2000);
 	}
 
 	track() {
@@ -317,7 +321,7 @@ class Biblio {
 		}
 	}
 
-	static b64toBlob(b64Data, contentType, sliceSize) {
+	static b64ToBlob(b64Data, contentType, sliceSize) {
 		contentType = contentType || '';
 		sliceSize = sliceSize || 512;
 

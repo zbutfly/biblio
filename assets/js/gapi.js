@@ -41,15 +41,15 @@ class GitHubAPI {
 				var fn = f.substr(0, f.length - 5);
 				var liblio = JSON.parse(gist.files[f].content);
 				if (null === first) first = liblio;
-				all[fn] = liblio.shelf || '';
 				if (!loaded && null === gn || gn === fn) {
 					loaded = true;
 					Biblio.info('GAPI gist [' + g[0] + '][' + fn + '] fetched.');
 					cb(liblio);
-				}
+				} else all[fn] = liblio.shelf || '';
 			}
 			if (!loaded && null != first) {
 				Biblio.info('GAPI gist [' + g[0] + '] fetched but [' + gn + '] not found, first [' + first.filename.substr(0, first.filename.length - 5) + '] is loaded.', 'warn');
+				all.remove(first.shelf);
 				cb(first);
 			}
 			cb2(all);
