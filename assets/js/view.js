@@ -8,14 +8,14 @@ class Biblio {
 			$('.biblio-menu-b-1').toggleClass('biblio-menu-b-1-click');
 			$('.biblio-menu-b-2').toggleClass('biblio-menu-b-2-click');
 			$('.biblio-menu-b-3').toggleClass('biblio-menu-b-3-click');
-			$('#biblio-menu-c').fadeToggle(2000);
+			$('#biblio-menu-c').fadeToggle(1000);
 			event.preventDefault();
 		});
 		$('#biblio-restart').on('click', () => {
 			localStorage.clear();
 			Biblio.info('RESET all cache cleared', 'info');
 			this.readme();
-			this.toggleMunu();
+			$('.biblio-menu-b').trigger('click');
 		});
 		$('#biblio-font-minus').on('click', () => this.zoom(false));
 		$('#biblio-font-reset').on('click', () => this.zoom());
@@ -63,9 +63,6 @@ class Biblio {
 				if (node.href) {
 					this.display(node);
 					$('.biblio-menu-b').trigger('click');
-					// this.context.tree.treeview('collapseAll', {
-					// 	silent: false
-					// });
 				} else {
 					this.context.tree.treeview('toggleNodeExpanded', [node.nodeId, {
 						silent: false
@@ -173,6 +170,8 @@ class Biblio {
 		this.api.getContent(node.href, content => {
 			Biblio.info('EPUB content [' + content.length + '] loaded.');
 			this.context.view.html('');
+			var ele = $('<div id="biblio-inner-epub"></div>');
+			ele.appendTo(this.context.view);
 
 			var book = new ePub();
 			var opened = book.open(content, 'base64').then(() => {
@@ -182,7 +181,7 @@ class Biblio {
 				Biblio.info('EPUB content [' + node.text + '] opened fail: ' + err + '.', 'error');
 				debugger;
 			});
-			var rendition = book.renderTo("biblio-epub", {
+			var rendition = book.renderTo("biblio-inner-epub", {
 				method: "continuous",
 				width: "100%",
 				height: "100%"
@@ -279,7 +278,7 @@ class Biblio {
 			size = (size * (zoom ? 1.25 : 0.75)).toFixed();
 			this.context.view.css('font-size', size + this.context.view.css('font-size').substr(size.toString().length))
 		}
-		$('#biblio-menu-c').fadeToggle(2000);
+		$('.biblio-menu-b').trigger('click');
 	}
 
 	track() {
@@ -319,6 +318,15 @@ class Biblio {
 				console.trace(msg);
 				break;
 		}
+	}
+
+	static b64ToArrayBuffer(b64Data) {
+		var binary_string = Base64.decode(b64Data);
+		var len = binary_string.length;
+		var bytes = new Uint8Array(len);
+		for (var i = 0; i < len; i++)
+			bytes[i] = binary_string.charCodeAt(i);
+		return bytes.buffer;
 	}
 
 	static b64ToBlob(b64Data, contentType, sliceSize) {
