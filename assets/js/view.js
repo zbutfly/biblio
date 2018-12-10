@@ -156,6 +156,8 @@ class Biblio {
 				this.api.getContent(node.href, content => this.context.view.html(Base64.decode(content)), this.context.view);
 				return;
 			case 'pdf':
+				this.api.getContent(node.href, content => this.displayPdf(node, content), this.context.view);
+				break;
 			case 'epub':
 			case 'mobi':
 				this.displayEpub(node);
@@ -165,6 +167,51 @@ class Biblio {
 				return;
 		}
 	}
+
+	displayPdfPage(pdf, canvas) {
+		var pn = parseInt($('#biblio-inner-pdf-nav-range').val());
+		return pdf.getPage(pn).then(page => {
+			Biblio.info('PDF page [' + (page.pageIndex + 1) + '/' + pdf.numPages + '] loaded.');
+			var viewport = page.getViewport(canvas.width / page.getViewport(1.0).width);
+			canvas.height = viewport.height;
+			page.render({
+				canvasContext: canvas.getContext('2d'),
+				viewport: viewport
+			}).then(() => {});
+		});
+	}
+
+	displayPdf(node, content) {
+		var v = this.context.view;
+		v.html('');
+		pdfjsLib.getDocument({
+			data: atob(content)
+		}).then(pdf => {
+			Biblio.info('PDF content [' + content.length + '] with page [' + pdf.numPages + '] loaded.');
+			v.html('<canvas id="biblio-inner-pdf"></canvas>' + '<div id="biblio-inner-pdf-nav">' +
+				'<a id="biblio-inner-pdf-nav-prev" class="glyphicon glyphicon-menu-left" title="Prev Page"></a>' +
+				'<input id="biblio-inner-pdf-nav-range" type="range" value="1" max="' + pdf.numPages + '" min="1"></input>' +
+				'<a id="biblio-inner-pdf-nav-next" class="glyphicon glyphicon-menu-right" title="next Page"></a></div>'
+			);
+			var prev = $('#biblio-inner-pdf-nav-prev'),
+				next = $('#biblio-inner-pdf-nav-next'),
+				range = $('#biblio-inner-pdf-nav-range'),
+				canvas = document.getElementById('biblio-inner-pdf');
+			range.on('change', () => this.displayPdfPage(pdf, canvas));
+			prev.on('click', () => {
+				range.val(parseInt(range.val()) - 1);
+				range.trigger('change');
+			});
+			next.on('click', () => {
+				range.val(parseInt(range.val()) + 1);
+				range.trigger('change');
+			});
+
+			canvas.width = this.context.view.width(); //viewport.width
+			return this.displayPdfPage(pdf, canvas);
+		});
+	}
+
 
 	displayEpub(node) {
 		this.api.getContent(node.href, content => {
@@ -306,7 +353,9 @@ class Biblio {
 					return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
 				});
 				var ele = $('<div id="' + uid + '" class="biblio-info biblio-info-' + level + '"></div>').hide().text(msg);
-				ele.appendTo($('#biblio-info-div')).fadeIn(t, 'linear', (e) => setTimeout(() => ele.fadeOut(t, 'linear', () => ele.remove()), t * 2));
+				ele.appendTo($('#biblio-info-div')).fadeIn(t, 'linear', (e) => setTimeout(() =>
+					ele.fadeOut(t, 'linear', () => ele.remove()), // comment this line with {}, upper line for debugging.
+					t * 2));
 				break;
 			case 'trace':
 			default:
