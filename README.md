@@ -12,7 +12,7 @@ The site contain an small [sample `liblio`](https://biblio.butfly.net) as defaul
 
 **My personal `liblio`, which contains some Chinese and Worldwide Classical Literature**:
 
-[Inebriatable Libliotheca - 可醉楼藏书](https://biblio.butfly.net#fe63a7cccabfd318da7e322502e1c2fe:inebriatable-libliotheca)
+[Inebriatable Libliotheca - 可醉楼藏书](https://biblio.butfly.net#fe63a7cccabfd318da7e322502e1c2fe=Inebriatable%20Libliotheca)
 
 ## Techical
 
